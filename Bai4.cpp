@@ -1,16 +1,17 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <math.h>
 
 using namespace std;
 
 bool is_prime(int n)
 {
-    if (n <= 1)
+    if (n < 2)
     {
         return false;
     }
-    for (int i = 2; i * i <= n; i++)
+    for (int i = 2; i <= sqrt(n); i++)
     {
         if (n % i == 0)
         {
@@ -20,46 +21,25 @@ bool is_prime(int n)
     return true;
 }
 
-vector<int> find_super_primes(int n)
+vector<int> super_primes(int n)
 {
-    vector<int> super_primes;
+    vector<int> result;
     queue<int> q;
 
-    // Thêm các số từ 2 đến 9 vào queue ban đầu
-    for (int i = 2; i <= 9; i++)
-    {
-        q.push(i);
-    }
-
-    // Sử dụng queue để tìm tất cả các số siêu nguyên tố nhỏ hơn hoặc bằng n
     while (!q.empty())
     {
-        int current_num = q.front();
+        int num = q.front();
         q.pop();
-
-        // Kiểm tra xem số hiện tại là số siêu nguyên tố
-        if (is_prime(current_num))
+        if (num <= n)
         {
-            string current_str = to_string(current_num);
-            if (current_str.length() == 1 || current_num <= n)
+            if (is_prime(num))
             {
-                super_primes.push_back(current_num);
+                result.push_back(num);
             }
-
-            // Thêm các số mới được tạo ra vào queue
-            for (int i = 0; i <= 9; i++)
+            for (int i = 1; i <= 9; i += 2)
             {
-                int new_num = current_num * 10 + i;
-                if (new_num <= n)
-                {
-                    q.push(new_num);
-                }
-            }
-
-            for (int i = 1; i < current_str.length(); i++)
-            {
-                int new_num = stoi(current_str.substr(0, i));
-                if (new_num <= n)
+                int new_num = num * 10 + i;
+                if (is_prime(new_num))
                 {
                     q.push(new_num);
                 }
@@ -67,22 +47,22 @@ vector<int> find_super_primes(int n)
         }
     }
 
-    return super_primes;
+    return result;
 }
 
 int main()
 {
     int n;
-    cout << "Nhap mot so nguyen n: ";
+    cout << "Nhập một số nguyên dương: ";
     cin >> n;
 
-    vector<int> super_primes = find_super_primes(n);
-    cout << "Cac so sieu nguyen to nho hon hoac bang " << n << " la: ";
-    for (int i = 0; i < super_primes.size(); i++)
+    vector<int> super_primes_list = super_primes(n);
+
+    cout << "Các số siêu nguyên tố nhỏ hơn hoặc bằng " << n << " là: ";
+    for (int i = 0; i < super_primes_list.size(); i++)
     {
-        cout << super_primes[i] << " ";
+        cout << super_primes_list[i] << " ";
     }
-    cout << endl;
 
     return 0;
 }
